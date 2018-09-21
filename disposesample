@@ -1,0 +1,59 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.ComponentModel;
+
+namespace Disposedemo
+{
+    public class ANNS
+    {
+    class Shoppolic:IDisposable
+    {
+        private bool disposed = false;
+        //pointer to an external unmanaged resources.
+        private IntPtr handle;
+        
+        //Other Managed resource this class uses. 
+        private Component component = new Component();
+
+        public Shoppolic(IntPtr handle)
+        {
+            this.handle = handle; 
+        }
+
+        public void Dispose()
+        {            
+            Dispose(true);
+            //The object will be cleaned by Dispose method.
+            //Therefore, you should call the GC.SupressFinalize to take this object off the finalization Queue
+            // and prevent  finalization code for this object from executing the second time.
+            GC.SuppressFinalize(this);
+        }
+        protected virtual void Dispose(Boolean disposing)
+        {
+            //Check to see if Dispose has already been called.
+            if (!this.disposed)
+            {
+                //Dispose(Bool) executes in two different scenarios.
+                //If disposing is true, the method has been called directly or indirectly from the User Code.
+                //Managed and Unmanaged resources can be disposed.
+                //If disposing is false, the method has been called by the runtime from inside the finalizer and
+                //should not reference other managed objects. Only unmanaged resources can be disposed.
+                //If disposing equals true, dispose all managed and unmanaged resources.
+                if (disposing)
+                {
+                    component.Dispose();
+                }
+                CloseHandle(handle);
+                handle = IntPtr.Zero;
+
+                disposed = true;//Note disposing has been done.
+            }
+
+        }
+
+    }
+    }
+}
